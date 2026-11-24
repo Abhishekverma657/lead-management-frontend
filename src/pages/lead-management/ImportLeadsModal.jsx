@@ -51,7 +51,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onImportSuccess }) {
                 "Address": "Hazratganj",
                 "Source": "Walk-in",
                 "Status": "New",
-                "Stage": "Discovery"
+                "Stage": "Warm"
             },
             {
                 "First Name": "Priya",
@@ -66,7 +66,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onImportSuccess }) {
                 "Address": "Civil Lines",
                 "Source": "Google Form",
                 "Status": "New",
-                "Stage": "Discovery"
+                "Stage": "Hot"
             }
         ];
 
@@ -148,7 +148,8 @@ export default function ImportLeadsModal({ isOpen, onClose, onImportSuccess }) {
                             <p className="font-bold text-gray-900">Important Excel Requirements:</p>
                             <ul className="list-disc pl-3.5 space-y-0.5 text-gray-600 text-[11px]">
                                 <li>Required columns: <strong>First Name</strong> and <strong>Mobile Number</strong>.</li>
-                                <li>System auto-formats numbers to <strong>LC-100X</strong> sequence.</li>
+                                <li>Optional columns: Last Name, Email, Course, Class, Parent Name, Parent Mobile, City, Address, Source, Status, Stage.</li>
+                                <li>Valid Stages: <strong>Hot, Warm, Cold, Frozen</strong>.</li>
                                 <li>Supports .xlsx, .xls, and .csv formats.</li>
                             </ul>
                         </div>
