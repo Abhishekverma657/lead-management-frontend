@@ -300,6 +300,8 @@ export default function LeadDashboard() {
         mobile: l.mobileNumber || "N/A",
         course: l.course || l.inquiryFor || "General Inquiry",
         status: l.status || "New",
+        stage: l.stage || (l.formResponseId?.remarks?.length ? l.formResponseId.remarks[l.formResponseId.remarks.length - 1].stage : ""),
+        disposition: l.disposition || (l.callLogs?.length ? l.callLogs[l.callLogs.length - 1].disposition : "") || (l.formResponseId?.remarks?.length ? l.formResponseId.remarks[l.formResponseId.remarks.length - 1].disposition : ""),
         assignedTo: l.assignedTo,
         assignedToLeadUser: l.assignedToLeadUser,
         lastUpdate: new Date(l.updatedAt || l.createdAt).toLocaleDateString(),
@@ -310,11 +312,25 @@ export default function LeadDashboard() {
     
     // Filtered by status and search
     const displayLeads = displayLeadsBase.filter(lead => {
-        const matchesStatus = leadStatusFilter === "All" || lead.status === leadStatusFilter;
+        let matchesStatus = true;
+        if (leadStatusFilter !== "All") {
+            if (leadStatusFilter === "In Process") {
+                matchesStatus = ['In Process', 'Interested', 'Visit Done', 'CNR', 'Will Think', 'Call Me Later'].includes(lead.status);
+            } else if (leadStatusFilter === "Follow Up") {
+                matchesStatus = lead.status === 'Follow Up';
+            } else if (leadStatusFilter === "Converted") {
+                matchesStatus = ['Converted', 'Admission Done', 'Registration Done'].includes(lead.status);
+            } else if (leadStatusFilter === "New") {
+                matchesStatus = lead.status === 'New';
+            } else {
+                matchesStatus = lead.status === leadStatusFilter;
+            }
+        }
         const matchesSearch = !searchQuery || 
             lead.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             lead.mobile?.includes(searchQuery) ||
-            lead.course?.toLowerCase().includes(searchQuery.toLowerCase());
+            lead.course?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (lead.disposition && lead.disposition.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchesStatus && matchesSearch;
     });
 
@@ -808,17 +824,25 @@ export default function LeadDashboard() {
                                             </td>
 
                                             <td className="p-3.5">
-                                                <span
-                                                    className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                                        lead.status === 'New' ? 'bg-rose-100 text-rose-700 border border-rose-200' :
-                                                        lead.status === 'In Process' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
-                                                        lead.status === 'Follow Up' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
-                                                        lead.status === 'Converted' || lead.status === 'Admission Done' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' :
-                                                        'bg-gray-100 text-gray-700 border border-gray-200'
-                                                    }`}
-                                                >
-                                                    {lead.status}
-                                                </span>
+                                                <div className="flex flex-col gap-1 items-start">
+                                                    <span
+                                                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                                            lead.status === 'New' ? 'bg-rose-100 text-rose-700 border border-rose-200' :
+                                                            lead.status === 'In Process' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
+                                                            lead.status === 'Follow Up' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                                                            lead.status === 'Converted' || lead.status === 'Admission Done' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' :
+                                                            'bg-gray-100 text-gray-700 border border-gray-200'
+                                                        }`}
+                                                    >
+                                                        {lead.status}
+                                                    </span>
+                                                    {lead.disposition && (
+                                                        <span className="text-[10px] font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 flex items-center gap-1 max-w-[150px] truncate" title={`Disposition: ${lead.disposition}`}>
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
+                                                            <span className="truncate">{lead.disposition}</span>
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
 
                                             <td className="p-3.5 text-right">

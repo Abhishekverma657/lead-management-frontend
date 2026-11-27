@@ -100,10 +100,15 @@ export const getStage = (lead) => {
 export const getDisposition = (lead) => {
     if (!lead) return "";
     if (lead.disposition) return lead.disposition;
+    if (lead.callLogs && lead.callLogs.length > 0) {
+        const lastCall = lead.callLogs[lead.callLogs.length - 1];
+        if (lastCall && lastCall.disposition) return lastCall.disposition;
+    }
     if (lead.formResponseId?.remarks?.length > 0) {
         const lastRemark = lead.formResponseId.remarks[lead.formResponseId.remarks.length - 1];
         if (lastRemark.disposition) return lastRemark.disposition;
     }
+    if (lead.formResponseId?.disposition) return lead.formResponseId.disposition;
     return getVal(lead.rawFormData, 'disposition');
 };
 

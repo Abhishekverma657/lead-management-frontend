@@ -125,8 +125,23 @@ export const getLeadUsers = async () => {
     return response.data;
 };
 
+export const createLeadUser = async (userData) => {
+    const response = await axiosClient.post("/lead-management/lead-users", userData);
+    return response.data;
+};
+
 export const updateLeadUser = async (userId, updateData) => {
     const response = await axiosClient.put(`/lead-management/lead-users/${userId}`, updateData);
+    return response.data;
+};
+
+export const deleteLeadUser = async (userId) => {
+    const response = await axiosClient.delete(`/lead-management/lead-users/${userId}`);
+    return response.data;
+};
+
+export const changeLeadUserPassword = async (userId, newPassword) => {
+    const response = await axiosClient.put(`/lead-management/lead-users/${userId}/password`, { newPassword });
     return response.data;
 };
 

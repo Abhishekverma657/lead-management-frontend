@@ -67,6 +67,10 @@ export const getStage = (lead) => {
 export const getDisposition = (lead) => {
     if (!lead) return "";
     if (lead.disposition) return lead.disposition;
+    if (lead.callLogs && lead.callLogs.length > 0) {
+        const lastCall = lead.callLogs[lead.callLogs.length - 1];
+        if (lastCall && lastCall.disposition) return lastCall.disposition;
+    }
     if (lead.formResponseId?.remarks?.length > 0) {
         const lastRemark = lead.formResponseId.remarks[lead.formResponseId.remarks.length - 1];
         if (lastRemark.disposition) return lastRemark.disposition;
@@ -76,57 +80,72 @@ export const getDisposition = (lead) => {
 };
 
 const SearchableSelect = ({ options, value, onChange, placeholder, className }) => {
-    const [search, setSearch] = React.useState(value || "");
+    const [search, setSearch] = React.useState("");
     const [isOpen, setIsOpen] = React.useState(false);
     const wrapperRef = React.useRef(null);
-
-    React.useEffect(() => {
-        setSearch(value || "");
-    }, [value]);
 
     React.useEffect(() => {
         const handleClickOutside = (event) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
                 setIsOpen(false);
-                setSearch(value || ""); 
+                setSearch(""); 
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [wrapperRef, value]);
+    }, [wrapperRef]);
 
-    const filteredOptions = options.filter(opt => opt.toLowerCase().includes(search.toLowerCase()));
+    const filteredOptions = search.trim() === ""
+        ? options
+        : options.filter(opt => opt.toLowerCase().includes(search.toLowerCase()));
 
     return (
         <div ref={wrapperRef} className="relative w-full">
-            <input
-                type="text"
-                placeholder={placeholder}
-                value={search}
-                onChange={(e) => {
-                    setSearch(e.target.value);
-                    setIsOpen(true);
-                }}
-                onFocus={() => setIsOpen(true)}
-                className={className}
-            />
+            <div 
+                onClick={() => setIsOpen(!isOpen)}
+                className={`flex items-center justify-between cursor-pointer ${className}`}
+            >
+                <span className={`truncate ${value ? "text-gray-900 font-semibold" : "text-gray-400"}`}>
+                    {value || placeholder}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+            </div>
+
             {isOpen && (
-                <div className="absolute bottom-[calc(100%+4px)] left-0 z-[100] w-[200px] bg-white border border-gray-100 rounded-lg shadow-xl max-h-48 overflow-y-auto transform transition-all origin-bottom-left">
-                    {filteredOptions.length > 0 ? filteredOptions.map(opt => (
-                        <div 
-                            key={opt}
-                            className="px-3 py-2 text-[11px] font-medium hover:bg-orange-50 cursor-pointer text-gray-700 transition-colors border-b border-gray-50 last:border-0"
-                            onClick={() => {
-                                onChange(opt);
-                                setSearch(opt);
-                                setIsOpen(false);
-                            }}
-                        >
-                            {opt}
-                        </div>
-                    )) : (
-                        <div className="px-3 py-2 text-[11px] text-gray-400">No options found</div>
-                    )}
+                <div className="absolute bottom-[calc(100%+6px)] left-0 z-[150] w-[260px] max-w-[90vw] bg-white border border-gray-200 rounded-xl shadow-2xl p-2 max-h-64 flex flex-col animate-in fade-in zoom-in-95 duration-100">
+                    <div className="mb-1.5 pb-1 border-b border-gray-100">
+                        <input
+                            type="text"
+                            placeholder="Type to search disposition..."
+                            value={search}
+                            autoFocus
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="w-full px-2.5 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 font-medium"
+                        />
+                    </div>
+                    <div className="overflow-y-auto flex-1 max-h-48 space-y-0.5 custom-scrollbar">
+                        {filteredOptions.length > 0 ? (
+                            filteredOptions.map(opt => (
+                                <div 
+                                    key={opt}
+                                    className={`px-2.5 py-1.5 text-[11px] font-medium rounded-lg cursor-pointer transition-colors ${
+                                        value === opt 
+                                            ? "bg-orange-100 text-[#FF5B22] font-bold" 
+                                            : "text-gray-700 hover:bg-orange-50 hover:text-orange-900"
+                                    }`}
+                                    onClick={() => {
+                                        onChange(opt);
+                                        setIsOpen(false);
+                                        setSearch("");
+                                    }}
+                                >
+                                    {opt}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-3 py-3 text-center text-[11px] text-gray-400 italic">No matching disposition found</div>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

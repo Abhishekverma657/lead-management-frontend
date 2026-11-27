@@ -4,7 +4,7 @@ import {
   Menu, X, LogOut, ChevronLeft, ChevronRight, ChevronDown, Search,
   LayoutDashboard, Flame, Users, ListTodo, Gift, 
   UserPlus, FileText, Star, FormInput, PlusCircle, Shield,
-  Settings, Info, Share2, Sparkles, CheckSquare, Radio, ArrowRight, User
+  Settings, Info, Share2, Sparkles, CheckSquare, Radio, ArrowRight, User, Smartphone
 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 
@@ -54,7 +54,7 @@ export default function AdminLayout() {
     { label: "Live Wallboard", path: "/lead-management/wallboard", icon: Radio, badge: "LIVE" },
     { label: "Staff & Callers", path: "/lead-management/staff", icon: UserPlus },
     { label: "Reports", path: "/lead-management/staff-reports", icon: FileText },
-    { label: "Rewards & Mobile", path: "/lead-management/rewards", icon: Star },
+    { label: "Mobile App Users", path: "/lead-management/rewards", icon: Smartphone },
     
     { type: "header", label: "FORM BUILDER" },
     { label: "All Forms", path: "/forms", icon: FormInput },

@@ -93,6 +93,7 @@ export default function App() {
               <Route path="staff" element={<StaffPage />} />
               <Route path="tasks" element={<TasksPage />} />
               <Route path="rewards" element={<MobileUsersPage />} />
+              <Route path="mobile-users" element={<MobileUsersPage />} />
             </Route>
 
             {/* Compatibility Aliases for /admin/... paths */}
@@ -112,6 +113,7 @@ export default function App() {
               <Route path="staff" element={<StaffPage />} />
               <Route path="tasks" element={<TasksPage />} />
               <Route path="rewards" element={<MobileUsersPage />} />
+              <Route path="mobile-users" element={<MobileUsersPage />} />
             </Route>
           </Route>
 

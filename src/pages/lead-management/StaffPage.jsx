@@ -3,7 +3,7 @@ import {
     LucideUser, LucideUserPlus, LucideTrash2, LucideMail, LucidePhone, LucideStar, 
     LucideLayoutDashboard, LucideKey, LucideSearch, LucideHeadphones, 
     LucideBriefcase, LucideShield, LucideFilter, LucideEdit3, LucideUsers,
-    LucideCheckCircle2, LucideClock, LucideLock, LucideRefreshCw, LucideRadio
+    LucideCheckCircle2, LucideClock, LucideLock, LucideRefreshCw, LucideRadio, LucideSmartphone
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import CreateStaffModal from "./CreateStaffModal";
@@ -462,6 +462,14 @@ export default function StaffPage() {
                     </div>
 
                     <div className="relative z-10 flex flex-wrap items-center gap-3">
+                        <Link
+                            to="/lead-management/rewards"
+                            className="inline-flex items-center gap-2 px-4 py-3.5 bg-white/10 hover:bg-white/20 text-orange-200 hover:text-white rounded-2xl border border-white/20 transition-all font-bold text-sm cursor-pointer"
+                        >
+                            <LucideSmartphone size={16} className="text-[#FF5B22]" />
+                            <span>Mobile App Users</span>
+                        </Link>
+
                         <button
                             type="button"
                             onClick={handleFetchAirtelExtensions}
